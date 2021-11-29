@@ -1,0 +1,30 @@
+import sqlite3 as sl
+
+con = sl.connect('my-test.db')
+
+with con:
+    con.execute("""
+        CREATE TABLE SNEAKERS1 (
+            id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            count INTEGER,
+            manufacture TEXT,
+            price FLOAT,
+            size FLOAT
+        );
+    """)
+
+    sql = 'INSERT INTO SNEAKERS1 (id, name, count, manufacture, price, size) values(?, ?, ?, ?, ?, ?)'
+    data = [
+        (1, 'Nike', 2, 'Chine', 200, 45),
+        (2, 'NeNike', 22, 'Chine', 200, 45),
+        (3, 'Adidas', 222, 'Chine', 200, 45)
+    ]
+
+    with con:
+        con.executemany(sql, data)
+
+    with con:
+        data = con.execute("SELECT * FROM SNEAKERS1")
+        for row in data:
+            print(row)
