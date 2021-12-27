@@ -1,0 +1,86 @@
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, Float, text
+
+engine = create_engine('sqlite:///sneakers.db')
+meta = MetaData()
+
+sneakers = Table(
+   'sneakers', meta,
+   Column('id', Integer, primary_key=True),
+   Column('name', String),
+   Column('count', Integer),
+   Column('manufacture', String),
+   Column('price', Float),
+   Column('size', Float),
+)
+meta.create_all(engine)
+
+class Products:
+    def __init__(self, name, count, manufacture, price, size):
+        self.name = name
+        self.count = count
+        self.manufacture = manufacture
+        self.price = price
+        self.size = size
+
+    def __str__(self):
+        return "name: %s, count: %s, manufacture: %s, price: %s, size: %s" % (
+            self.name, self.count, self.manufacture, self.price, self.size)
+
+    def addProuct(name, count, manufacture, price, size):
+        ins = sneakers.insert()
+        ins = sneakers.insert().values(name=Name, count=Count, manufacture=Manufacture, price=Price, size=Size)
+        conn = engine.connect()
+        result = conn.execute(ins)
+
+    def viewAll():
+        s = sneakers.select()
+        conn = engine.connect()
+        result = conn.execute(s)
+
+        for row in result:
+            print(row)
+
+    def delete(id):
+        conn = engine.connect()
+        stmt = sneakers.delete().where(sneakers.c.id == position)
+        conn.execute(stmt)
+
+    def statistic():
+        conn = engine.connect()
+        t = text("SELECT COUNT(id) FROM SNEAKERS")
+        result = conn.execute(t)
+        for row in result:
+            print(row[0])
+
+while True:
+    print('Что хотите сделать?\n'
+          '1 - добавление\n'
+          '2 - отображение всего\n'
+          '3 - удалить позицию\n'
+          '4 - статистика по позициям\n')
+    command = input()
+    if command == '1':
+        print('Введите название кроссовок:')
+        Name = input()
+        print('Введите кол-во кроссовок:')
+        Count = int(input())
+        print('Введите производителя:')
+        Manufacture = input()
+        print('Введите цену:')
+        Price = float(input())
+        print('Введите размер:')
+        Size = float(input())
+
+        Products.addProuct(Name, Count, Manufacture, Price, Size)
+
+    elif command == '2':
+        Products.viewAll()
+
+    elif command == '3':
+        print('Введите id для удаления:')
+        position = input()
+
+        Products.delete(position)
+
+    elif command == '4':
+        Products.statistic()
