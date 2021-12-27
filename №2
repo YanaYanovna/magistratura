@@ -1,4 +1,6 @@
 import sqlite3 as sl
+import sqlalchemy as sqla
+# from sqlalchemy import create_engine
 
 con = sl.connect('my-test.db')
 
@@ -19,7 +21,8 @@ with con:
         );
     """)
 
-id=1
+engine = sqla.create_engine('sqlite:///my-test.db')
+engine.connect()
 
 while True:
     print('Что хотите сделать?\n'
@@ -40,9 +43,9 @@ while True:
         print('Введите размер:')
         Size = float(input())
 
-        sql = 'INSERT INTO SNEAKERS1 (id, name, count, manufacture, price, size) values(?, ?, ?, ?, ?, ?)'
+        sql = 'INSERT INTO SNEAKERS1 (name, count, manufacture, price, size) values(?, ?, ?, ?, ?)'
         data = [
-            (id, Name, Count, Manufacture, Price, Size)
+            (Name, Count, Manufacture, Price, Size)
         ]
 
         with con:
@@ -53,14 +56,6 @@ while True:
             for row in data:
                 print(row)
 
-        with con:
-            data = con.execute("SELECT id FROM SNEAKERS1")
-            for row in data:
-                id=row[0]
-
-        id=id+1
-        print(id)
-
     elif command == '2':
         with con:
             data = con.execute("SELECT * FROM SNEAKERS1")
@@ -69,8 +64,8 @@ while True:
 
     elif command == '3':
         print('Введите id для удаления:')
-        mee = input()
-        str="DELETE FROM SNEAKERS1 WHERE ID="+mee
+        position_for_delete = input()
+        str = "DELETE FROM SNEAKERS1 WHERE ID=" + position_for_delete
         with con:
             data = con.execute(str)
 
