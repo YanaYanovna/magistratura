@@ -14,24 +14,15 @@ sneakers = Table(
 )
 meta.create_all(engine)
 
-class Products:
-    def __init__(self, name, count, manufacture, price, size):
-        self.name = name
-        self.count = count
-        self.manufacture = manufacture
-        self.price = price
-        self.size = size
-
-    def __str__(self):
-        return "name: %s, count: %s, manufacture: %s, price: %s, size: %s" % (
-            self.name, self.count, self.manufacture, self.price, self.size)
-
-    def addProuct(name, count, manufacture, price, size):
-        ins = sneakers.insert()
-        ins = sneakers.insert().values(name=Name, count=Count, manufacture=Manufacture, price=Price, size=Size)
+#########################
+class Service:
+    @staticmethod
+    def addSneakers(name, count, manufacture, price, size):
+        ins = sneakers.insert().values(name=name, count=count, manufacture=manufacture, price=price, size=size)
         conn = engine.connect()
         result = conn.execute(ins)
 
+    @staticmethod
     def viewAll():
         s = sneakers.select()
         conn = engine.connect()
@@ -40,17 +31,21 @@ class Products:
         for row in result:
             print(row)
 
+    @staticmethod
     def delete(id):
         conn = engine.connect()
-        stmt = sneakers.delete().where(sneakers.c.id == position)
+        stmt = sneakers.delete().where(sneakers.c.id == id)
         conn.execute(stmt)
 
+    @staticmethod
     def statistic():
         conn = engine.connect()
         t = text("SELECT COUNT(id) FROM SNEAKERS")
         result = conn.execute(t)
+
         for row in result:
             print(row[0])
+#########################
 
 while True:
     print('Что хотите сделать?\n'
@@ -71,16 +66,16 @@ while True:
         print('Введите размер:')
         Size = float(input())
 
-        Products.addProuct(Name, Count, Manufacture, Price, Size)
+        Service.addSneakers(Name, Count, Manufacture, Price, Size)
 
     elif command == '2':
-        Products.viewAll()
+        Service.viewAll()
 
     elif command == '3':
         print('Введите id для удаления:')
-        position = input()
+        del_id = int(input())
 
-        Products.delete(position)
+        Service.delete(del_id)
 
     elif command == '4':
-        Products.statistic()
+        Service.statistic()
